@@ -3,10 +3,12 @@ import React from 'react'
 
 const Experience = () => {
   return (
+    <>
     <mesh>
-      <boxGeometry />
+      <boxGeometry  />
       <meshBasicMaterial color="red" />
     </mesh>
+    </>
   )
 }
 

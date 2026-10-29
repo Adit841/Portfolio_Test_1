@@ -4,8 +4,13 @@ import Experience from './Experience.jsx'
 
 const Three = () => {
   return (
-    <div>
-      <Canvas>
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <Canvas
+        camera={{
+          position: [0, 0, 5],
+          fov: 50,
+        }}
+      >
         <Experience />
       </Canvas>
     </div>
