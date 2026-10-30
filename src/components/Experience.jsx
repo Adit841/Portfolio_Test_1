@@ -74,11 +74,12 @@ const Experience = () => {
   useEffect(() => {
     const handleScroll = (e) => {
       e.preventDefault();
-      targetRotationRef.current += e.deltaY * 0.03;
+      targetRotationRef.current += e.deltaY * 0.003;
+
       targetScrollSpeedRef.current = THREE.MathUtils.clamp(
         targetScrollSpeedRef.current + e.deltaY * 0.003,
-        -2,
-        2,
+        -0.6,
+        0.6,
       );
     };
     canvas.addEventListener("wheel", handleScroll);
