@@ -4,6 +4,9 @@ import React, { useMemo, useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import vertexShader from "../shaders/vertex.glsl";
 import fragmentShader from "../shaders/fragment.glsl";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+
 
 const IMAGE_URL = [
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIwoqJMQHmK1De13DOQdN45qn3pVQmMSnVxDT1imEjlw&s=10",
@@ -68,6 +71,9 @@ const Experience = () => {
   const scrollSpeedRef = useRef(0);
   const targetScrollSpeedRef = useRef(0);
 
+  const mouseRef = useRef({ x:0, y:0});
+  const targetMouseRef = useRef({ x:0, y:0});
+
   const { gl } = useThree();
 
   const canvas = gl.domElement;
@@ -89,6 +95,23 @@ const Experience = () => {
     };
   }, [gl]);
 
+  useEffect(() => {
+    window.addEventListener('mousemove', (e) => {
+      targetMouseRef.current.x = (e.clientX / window.innerWidth - 0.5  ) * 2;
+      targetMouseRef.current.y = (e.clientY/ window.innerWidth - 0.5 ) * 2;
+    })
+  })
+
+  useGSAP(() => {
+    gsap.to(mouseRef.current,{
+      x: targetMouseRef.current.x * 0.05,
+      y: targetMouseRef.current.y * 0.05,
+      duration: 0.6,
+      ease: 'power2.out',
+    })
+  })
+
+
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
@@ -108,6 +131,9 @@ const Experience = () => {
     );
 
     targetScrollSpeedRef.current *= Math.exp(-5 * delta);
+
+    groupRef.current.rotation.x += (-targetMouseRef.current.x * 0.3 - groupRef.current.rotation.x) * 0.1;
+    groupRef.current.rotation.z += (targetMouseRef.current.y * 0.03 - groupRef.current.rotation.z) * 0.05;
 
     if (
       Math.abs(targetScrollSpeedRef.current) < 0.001 &&
