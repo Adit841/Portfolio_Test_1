@@ -1,6 +1,7 @@
 import React from 'react'
 import { Canvas } from '@react-three/fiber'
 import Experience from './Experience.jsx'
+import { OrbitControls } from '@react-three/drei'
 
 const Three = () => {
   return (
@@ -11,6 +12,7 @@ const Three = () => {
           fov: 50,
         }}
       >
+      {/* <OrbitControls/> */}
         <Experience />
       </Canvas>
     </div>
