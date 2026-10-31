@@ -36,7 +36,7 @@ const Three = () => {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 h-dvh w-full [&_*]:!pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-10 h-dvh w-full [&_*]:!pointer-events-none"
     >
       <SceneErrorBoundary
         fallback={
