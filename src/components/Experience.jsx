@@ -4,15 +4,7 @@ import React, { useMemo, useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import vertexShader from "../shaders/vertex.glsl";
 import fragmentShader from "../shaders/fragment.glsl";
-
-const IMAGE_URL = [
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIwoqJMQHmK1De13DOQdN45qn3pVQmMSnVxDT1imEjlw&s=10",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfefnPB5-XUOQZG9yg72piNQNdMSRPANXIswRz8e3KBLV9Z2NBtx-anLC7&s=10",
-  "https://static0.cbrimages.com/wordpress/wp-content/uploads/2024/09/luffy-gear-3.jpg?w=1200&h=900&fit=crop",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL8Wt3okh60ZuEnw5cWZv3aT3pisKyY4ijqrnQC_k2QqYllFtGARDfo7Xd&s=10",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJT_Fe_dr11ZHkGxTVlGzNLcUKSDwYOoX0dnEWdfAh1g&s=10",
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMSwMJBdtUOnwVccCv98Cx5ZIXtNz-OGphQ6gMYX3hlxZhlDAwoAo1iGHw&s=10",
-];
+import { IMAGE_URL } from "../data/cards.js";
 
 const CARD_H = 0.7;
 const CARD_W = 1.4;
@@ -21,7 +13,7 @@ const TOTAL_CARDS = IMAGE_URL.length;
 const PLANE_ASPECT = CARD_W / CARD_H;
 const HALF_HEIGHT = CARD_H / 2;
 
-const Card = ({ index, texture, scrollSpeedRef }) => {
+const Card = ({ index, texture, scrollSpeedRef, dragRef, onSelect }) => {
   const angle = (index / TOTAL_CARDS) * Math.PI * 2;
   const materialRef = useRef(null);
 
@@ -56,7 +48,21 @@ const Card = ({ index, texture, scrollSpeedRef }) => {
   });
 
   return (
-    <mesh position={position} rotation={rotation}>
+    <mesh
+      position={position}
+      rotation={rotation}
+      onPointerOver={() => {
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        document.body.style.cursor = "auto";
+      }}
+      onClick={(event) => {
+        event.stopPropagation();
+        if (dragRef.current) return;
+        onSelect(index);
+      }}
+    >
       <planeGeometry args={[CARD_W, CARD_H, 32, 32]} />
       <shaderMaterial
         ref={materialRef}
@@ -70,10 +76,11 @@ const Card = ({ index, texture, scrollSpeedRef }) => {
   );
 };
 
-const Experience = () => {
+const Experience = ({ onSelect }) => {
   const textures = useTexture(IMAGE_URL);
 
   const groupRef = useRef(null);
+  const dragRef = useRef(false);
 
   const currentRotationRef = useRef(0);
   const targetRotationRef = useRef(0);
@@ -82,6 +89,12 @@ const Experience = () => {
   const targetScrollSpeedRef = useRef(0);
 
   const targetMouseRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = "auto";
+    };
+  }, []);
 
   useEffect(() => {
     const applyDelta = (deltaY) => {
@@ -115,14 +128,17 @@ const Experience = () => {
     let dragging = false;
     let lastPointerY = 0;
     const onPointerDown = (event) => {
-      if (event.target.closest("a, nav, footer")) return;
+      if (event.target.closest("a, nav, footer, [data-card-details]")) return;
       if (event.pointerType === "mouse" && event.button !== 0) return;
       dragging = true;
+      dragRef.current = false;
       lastPointerY = event.clientY;
     };
     const onPointerMove = (event) => {
       if (!dragging) return;
-      applyDelta(lastPointerY - event.clientY);
+      const delta = lastPointerY - event.clientY;
+      if (Math.abs(delta) > 6) dragRef.current = true;
+      applyDelta(delta);
       lastPointerY = event.clientY;
     };
     const onPointerUp = () => {
@@ -212,6 +228,8 @@ const Experience = () => {
           index={index}
           texture={texture}
           scrollSpeedRef={scrollSpeedRef}
+          dragRef={dragRef}
+          onSelect={onSelect}
         />
       ))}
     </group>

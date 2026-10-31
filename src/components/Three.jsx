@@ -32,12 +32,9 @@ const Loader = () => {
   );
 };
 
-const Three = () => {
+const Three = ({ onSelect, onMiss }) => {
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-10 h-full w-full [&_*]:!pointer-events-none"
-    >
+    <div className="absolute inset-0 z-10 h-full w-full">
       <SceneErrorBoundary
         fallback={
           <div className="flex h-full items-center justify-center">
@@ -51,6 +48,7 @@ const Three = () => {
             position: [0, 0, 5],
             fov: 50,
           }}
+          onPointerMissed={onMiss}
         >
           <SceneErrorBoundary
             fallback={
@@ -60,7 +58,7 @@ const Three = () => {
             }
           >
             <Suspense fallback={<Loader />}>
-              <Experience />
+              <Experience onSelect={onSelect} />
             </Suspense>
           </SceneErrorBoundary>
         </Canvas>
