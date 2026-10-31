@@ -5,7 +5,7 @@ import { OrbitControls } from '@react-three/drei'
 
 const Three = () => {
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className=' fixed top-0 left-0 z-[60] h-screen w-full'>
       <Canvas
         camera={{
           position: [0, 0, 5],
