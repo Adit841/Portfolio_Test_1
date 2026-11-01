@@ -23,11 +23,6 @@ function githubPagesSpaFallback() {
 
 // https://vite.dev/config/
 export default defineConfig({
-<<<<<<< HEAD
-  plugins: [react(),tailwindcss(), glsl(), ],
-  base: '/Portfolio_Test_1/',
-=======
   base: '/Portfolio_Test_1/',
   plugins: [react(),tailwindcss(), glsl(), githubPagesSpaFallback()],
->>>>>>> 3d0babf (living at github)
 })
