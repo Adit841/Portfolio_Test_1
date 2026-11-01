@@ -5,5 +5,6 @@ import glsl from 'vite-plugin-glsl'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss(), glsl()],
+  plugins: [react(),tailwindcss(), glsl(), ],
+  base: '/Portfolio_Test_1/',
 })
